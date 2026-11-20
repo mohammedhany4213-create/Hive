@@ -1,4 +1,9 @@
+using Hive.Application.Abstractions.Persistence;
+using Hive.Application.Abstractions.Security;
 using Hive.Infrastructure.Persistence;
+using Hive.Infrastructure.Persistence.Repositories;
+using Hive.Infrastructure.Security;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +22,9 @@ public static class DependencyInjection
 
         services.AddDbContext<HiveDbContext>(options =>
             options.UseSqlServer(connectionString));
+
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
 
         return services;
     }

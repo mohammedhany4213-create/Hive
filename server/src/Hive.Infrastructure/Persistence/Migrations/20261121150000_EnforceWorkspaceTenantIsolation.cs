@@ -88,6 +88,18 @@ public partial class EnforceWorkspaceTenantIsolation : Migration
                 IF EXISTS (
                     SELECT 1
                     FROM inserted i
+                    INNER JOIN dbo.Files f ON f.CollectionId = i.CollectionId
+                    INNER JOIN dbo.FileVersions v ON v.FileId = f.FileId
+                    LEFT JOIN dbo.WorkspaceMembers uploader
+                        ON uploader.MemberId = v.UploadedByMemberId
+                       AND uploader.WorkspaceId = i.WorkspaceId
+                    WHERE uploader.MemberId IS NULL
+                )
+                    THROW 51014, 'All file version uploaders must belong to the collection workspace.', 1;
+
+                IF EXISTS (
+                    SELECT 1
+                    FROM inserted i
                     INNER JOIN dbo.Permissions p ON p.CollectionId = i.CollectionId
                     INNER JOIN dbo.WorkspaceMembers targetMember ON targetMember.MemberId = p.WorkspaceMemberId
                     INNER JOIN dbo.WorkspaceMembers grantor ON grantor.MemberId = p.GrantedByMemberId

@@ -29,10 +29,6 @@ public sealed class HiveApiFactory : WebApplicationFactory<Program>
         });
     }
 
-    protected override void Dispose(bool disposing)
-    {
-        base.Dispose(disposing);
-    }
 }
 
 public sealed class FakeUserRepository : IUserRepository

@@ -1,3 +1,4 @@
+using Hive.Application.Common.Exceptions;
 using Hive.Application.Abstractions.Persistence;
 using Hive.Application.Abstractions.Security;
 using Hive.Application.Features.Authentication.Register;

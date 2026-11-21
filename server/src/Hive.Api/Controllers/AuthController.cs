@@ -62,5 +62,5 @@ public sealed record RegisterRequest(
     string Email,
 
     [property: System.ComponentModel.DataAnnotations.Required]
-    [property: System.ComponentModel.DataAnnotations.MinLength(8)]
+    [property: System.ComponentModel.DataAnnotations.StringLength(128, MinimumLength = 8)]
     string Password);

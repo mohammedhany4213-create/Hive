@@ -7,6 +7,12 @@ namespace Hive.Application.Features.Authentication.Register;
 
 public sealed class RegisterCommandHandler
 {
+    private const int MinimumFullNameLength = 2;
+    private const int MaximumFullNameLength = 150;
+    private const int MaximumEmailLength = 256;
+    private const int MinimumPasswordLength = 8;
+    private const int MaximumPasswordLength = 128;
+
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
 
@@ -28,21 +34,31 @@ public sealed class RegisterCommandHandler
         var email = command.Email?.Trim().ToLowerInvariant();
         var password = command.Password;
 
-        if (string.IsNullOrWhiteSpace(fullName))
-            throw new ArgumentException("Full name is required.", nameof(command));
+        if (string.IsNullOrWhiteSpace(fullName) ||
+            fullName.Length < MinimumFullNameLength ||
+            fullName.Length > MaximumFullNameLength)
+        {
+            throw new ArgumentException(
+                $"Full name must be between {MinimumFullNameLength} and {MaximumFullNameLength} characters.",
+                nameof(command));
+        }
 
-        if (fullName.Length > 150)
-            throw new ArgumentException("Full name cannot exceed 150 characters.", nameof(command));
-
-        if (string.IsNullOrWhiteSpace(email) || email.Length > 256 ||
+        if (string.IsNullOrWhiteSpace(email) ||
+            email.Length > MaximumEmailLength ||
             !MailAddress.TryCreate(email, out var parsedEmail) ||
             !string.Equals(parsedEmail.Address, email, StringComparison.OrdinalIgnoreCase))
         {
             throw new ArgumentException("A valid email address is required.", nameof(command));
         }
 
-        if (string.IsNullOrWhiteSpace(password) || password.Length < 8)
-            throw new ArgumentException("Password must be at least 8 characters long.", nameof(command));
+        if (string.IsNullOrWhiteSpace(password) ||
+            password.Length < MinimumPasswordLength ||
+            password.Length > MaximumPasswordLength)
+        {
+            throw new ArgumentException(
+                $"Password must be between {MinimumPasswordLength} and {MaximumPasswordLength} characters.",
+                nameof(command));
+        }
 
         var existingUser = await _userRepository.GetByEmailAsync(email, cancellationToken);
         if (existingUser is not null)

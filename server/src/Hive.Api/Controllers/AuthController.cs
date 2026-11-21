@@ -53,15 +53,15 @@ public sealed class AuthController : ControllerBase
 }
 
 public sealed record RegisterRequest(
-    [property: System.ComponentModel.DataAnnotations.Required]
-    [property: System.ComponentModel.DataAnnotations.StringLength(150, MinimumLength = 2)]
+    [param: System.ComponentModel.DataAnnotations.Required]
+    [param: System.ComponentModel.DataAnnotations.StringLength(150, MinimumLength = 2)]
     string FullName,
 
-    [property: System.ComponentModel.DataAnnotations.Required]
-    [property: System.ComponentModel.DataAnnotations.EmailAddress]
-    [property: System.ComponentModel.DataAnnotations.StringLength(256)]
+    [param: System.ComponentModel.DataAnnotations.Required]
+    [param: System.ComponentModel.DataAnnotations.EmailAddress]
+    [param: System.ComponentModel.DataAnnotations.StringLength(256)]
     string Email,
 
-    [property: System.ComponentModel.DataAnnotations.Required]
-    [property: System.ComponentModel.DataAnnotations.StringLength(128, MinimumLength = 8)]
+    [param: System.ComponentModel.DataAnnotations.Required]
+    [param: System.ComponentModel.DataAnnotations.StringLength(128, MinimumLength = 8)]
     string Password);

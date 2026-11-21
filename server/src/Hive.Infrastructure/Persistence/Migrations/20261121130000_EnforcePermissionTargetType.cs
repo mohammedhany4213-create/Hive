@@ -6,8 +6,6 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Hive.Infrastructure.Persistence.Migrations;
 
-[DbContext(typeof(HiveDbContext))]
-[Migration("20261121130000_EnforcePermissionTargetType")]
 public partial class EnforcePermissionTargetType : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)

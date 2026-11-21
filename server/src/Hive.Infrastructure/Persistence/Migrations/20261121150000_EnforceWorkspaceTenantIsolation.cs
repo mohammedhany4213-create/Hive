@@ -17,7 +17,7 @@ public partial class EnforceWorkspaceTenantIsolation : Migration
                    AND m.WorkspaceId = c.WorkspaceId
                 WHERE m.MemberId IS NULL
             )
-                THROW 51000, 'Workspace isolation migration blocked: a collection creator belongs to another workspace.', 1;
+                ;THROW 51000, 'Workspace isolation migration blocked: a collection creator belongs to another workspace.', 1;
 
             IF EXISTS (
                 SELECT 1
@@ -28,7 +28,7 @@ public partial class EnforceWorkspaceTenantIsolation : Migration
                    AND m.WorkspaceId = c.WorkspaceId
                 WHERE m.MemberId IS NULL
             )
-                THROW 51000, 'Workspace isolation migration blocked: a file uploader belongs to another workspace.', 1;
+                ;THROW 51000, 'Workspace isolation migration blocked: a file uploader belongs to another workspace.', 1;
 
             IF EXISTS (
                 SELECT 1
@@ -40,7 +40,7 @@ public partial class EnforceWorkspaceTenantIsolation : Migration
                    AND m.WorkspaceId = c.WorkspaceId
                 WHERE m.MemberId IS NULL
             )
-                THROW 51000, 'Workspace isolation migration blocked: a file version uploader belongs to another workspace.', 1;
+                ;THROW 51000, 'Workspace isolation migration blocked: a file version uploader belongs to another workspace.', 1;
 
             IF EXISTS (
                 SELECT 1
@@ -53,7 +53,7 @@ public partial class EnforceWorkspaceTenantIsolation : Migration
                 WHERE targetMember.WorkspaceId <> COALESCE(c.WorkspaceId, fc.WorkspaceId)
                    OR grantor.WorkspaceId <> COALESCE(c.WorkspaceId, fc.WorkspaceId)
             )
-                THROW 51000, 'Workspace isolation migration blocked: a permission crosses workspace boundaries.', 1;
+                ;THROW 51000, 'Workspace isolation migration blocked: a permission crosses workspace boundaries.', 1;
             """);
 
         migrationBuilder.Sql("""
@@ -72,7 +72,7 @@ public partial class EnforceWorkspaceTenantIsolation : Migration
                        AND m.WorkspaceId = i.WorkspaceId
                     WHERE m.MemberId IS NULL
                 )
-                    THROW 51001, 'Collection creator must belong to the same workspace.', 1;
+                    ;THROW 51001, 'Collection creator must belong to the same workspace.', 1;
 
                 IF EXISTS (
                     SELECT 1
@@ -83,7 +83,7 @@ public partial class EnforceWorkspaceTenantIsolation : Migration
                        AND uploader.WorkspaceId = i.WorkspaceId
                     WHERE uploader.MemberId IS NULL
                 )
-                    THROW 51002, 'All file uploaders must belong to the collection workspace.', 1;
+                    ;THROW 51002, 'All file uploaders must belong to the collection workspace.', 1;
 
                 IF EXISTS (
                     SELECT 1
@@ -95,7 +95,7 @@ public partial class EnforceWorkspaceTenantIsolation : Migration
                        AND uploader.WorkspaceId = i.WorkspaceId
                     WHERE uploader.MemberId IS NULL
                 )
-                    THROW 51014, 'All file version uploaders must belong to the collection workspace.', 1;
+                    ;THROW 51014, 'All file version uploaders must belong to the collection workspace.', 1;
 
                 IF EXISTS (
                     SELECT 1
@@ -106,7 +106,7 @@ public partial class EnforceWorkspaceTenantIsolation : Migration
                     WHERE targetMember.WorkspaceId <> i.WorkspaceId
                        OR grantor.WorkspaceId <> i.WorkspaceId
                 )
-                    THROW 51003, 'Collection permissions must belong to the collection workspace.', 1;
+                    ;THROW 51003, 'Collection permissions must belong to the collection workspace.', 1;
 
                 IF EXISTS (
                     SELECT 1
@@ -118,7 +118,7 @@ public partial class EnforceWorkspaceTenantIsolation : Migration
                     WHERE targetMember.WorkspaceId <> i.WorkspaceId
                        OR grantor.WorkspaceId <> i.WorkspaceId
                 )
-                    THROW 51004, 'File permissions must belong to the parent collection workspace.', 1;
+                    ;THROW 51004, 'File permissions must belong to the parent collection workspace.', 1;
             END;
             """);
 
@@ -139,7 +139,7 @@ public partial class EnforceWorkspaceTenantIsolation : Migration
                        AND m.WorkspaceId = c.WorkspaceId
                     WHERE m.MemberId IS NULL
                 )
-                    THROW 51005, 'File uploader must belong to the parent collection workspace.', 1;
+                    ;THROW 51005, 'File uploader must belong to the parent collection workspace.', 1;
 
                 IF EXISTS (
                     SELECT 1
@@ -151,7 +151,7 @@ public partial class EnforceWorkspaceTenantIsolation : Migration
                        AND m.WorkspaceId = c.WorkspaceId
                     WHERE m.MemberId IS NULL
                 )
-                    THROW 51006, 'File version uploader must belong to the parent collection workspace.', 1;
+                    ;THROW 51006, 'File version uploader must belong to the parent collection workspace.', 1;
 
                 IF EXISTS (
                     SELECT 1
@@ -163,7 +163,7 @@ public partial class EnforceWorkspaceTenantIsolation : Migration
                     WHERE targetMember.WorkspaceId <> c.WorkspaceId
                        OR grantor.WorkspaceId <> c.WorkspaceId
                 )
-                    THROW 51007, 'File permissions must belong to the file workspace.', 1;
+                    ;THROW 51007, 'File permissions must belong to the file workspace.', 1;
             END;
             """);
 
@@ -185,7 +185,7 @@ public partial class EnforceWorkspaceTenantIsolation : Migration
                        AND m.WorkspaceId = c.WorkspaceId
                     WHERE m.MemberId IS NULL
                 )
-                    THROW 51008, 'File version uploader must belong to the file workspace.', 1;
+                    ;THROW 51008, 'File version uploader must belong to the file workspace.', 1;
             END;
             """);
 
@@ -208,7 +208,7 @@ public partial class EnforceWorkspaceTenantIsolation : Migration
                     WHERE targetMember.WorkspaceId <> COALESCE(c.WorkspaceId, fc.WorkspaceId)
                        OR grantor.WorkspaceId <> COALESCE(c.WorkspaceId, fc.WorkspaceId)
                 )
-                    THROW 51009, 'Permission target and grantor must belong to the target resource workspace.', 1;
+                    ;THROW 51009, 'Permission target and grantor must belong to the target resource workspace.', 1;
             END;
             """);
 
@@ -226,7 +226,7 @@ public partial class EnforceWorkspaceTenantIsolation : Migration
                     INNER JOIN dbo.Collections c ON c.CreatedByMemberId = i.MemberId
                     WHERE c.WorkspaceId <> i.WorkspaceId
                 )
-                    THROW 51010, 'A workspace member cannot be moved while they created collections in another workspace.', 1;
+                    ;THROW 51010, 'A workspace member cannot be moved while they created collections in another workspace.', 1;
 
                 IF EXISTS (
                     SELECT 1
@@ -235,7 +235,7 @@ public partial class EnforceWorkspaceTenantIsolation : Migration
                     INNER JOIN dbo.Collections c ON c.CollectionId = f.CollectionId
                     WHERE c.WorkspaceId <> i.WorkspaceId
                 )
-                    THROW 51011, 'A workspace member cannot be moved while they uploaded files in another workspace.', 1;
+                    ;THROW 51011, 'A workspace member cannot be moved while they uploaded files in another workspace.', 1;
 
                 IF EXISTS (
                     SELECT 1
@@ -245,7 +245,7 @@ public partial class EnforceWorkspaceTenantIsolation : Migration
                     INNER JOIN dbo.Collections c ON c.CollectionId = f.CollectionId
                     WHERE c.WorkspaceId <> i.WorkspaceId
                 )
-                    THROW 51012, 'A workspace member cannot be moved while they uploaded versions in another workspace.', 1;
+                    ;THROW 51012, 'A workspace member cannot be moved while they uploaded versions in another workspace.', 1;
 
                 IF EXISTS (
                     SELECT 1
@@ -258,7 +258,7 @@ public partial class EnforceWorkspaceTenantIsolation : Migration
                     LEFT JOIN dbo.Collections fc ON fc.CollectionId = f.CollectionId
                     WHERE COALESCE(c.WorkspaceId, fc.WorkspaceId) <> i.WorkspaceId
                 )
-                    THROW 51013, 'A workspace member cannot be moved while they participate in permissions for another workspace.', 1;
+                    ;THROW 51013, 'A workspace member cannot be moved while they participate in permissions for another workspace.', 1;
             END;
             """);
     }

@@ -217,6 +217,7 @@ namespace Hive.Infrastructure.Persistence.Migrations
                     b.ToTable("Permissions", null, t =>
                         {
                             t.HasCheckConstraint("CK_Permissions_ExactlyOneTarget", "([CollectionId] IS NOT NULL AND [FileId] IS NULL) OR ([CollectionId] IS NULL AND [FileId] IS NOT NULL)");
+                            t.HasCheckConstraint("CK_Permissions_TargetMatchesPermissionType", "([CollectionId] IS NOT NULL AND [PermissionType] BETWEEN 1 AND 4) OR ([FileId] IS NOT NULL AND [PermissionType] BETWEEN 5 AND 7)");
                         });
                 });
 

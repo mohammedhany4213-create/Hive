@@ -1,11 +1,15 @@
 using Hive.Application.Abstractions.Persistence;
+using Hive.Application.Common.Exceptions;
 using Hive.Domain.Entities;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hive.Infrastructure.Persistence.Repositories;
 
 public sealed class UserRepository : IUserRepository
 {
+    private const string EmailUniqueIndexName = "IX_Users_Email";
+
     private readonly HiveDbContext _dbContext;
 
     public UserRepository(HiveDbContext dbContext)
@@ -28,6 +32,26 @@ public sealed class UserRepository : IUserRepository
         CancellationToken cancellationToken = default)
     {
         await _dbContext.Users.AddAsync(user, cancellationToken);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        try
+        {
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException exception) when (IsEmailUniqueViolation(exception))
+        {
+            throw new EmailAlreadyExistsException();
+        }
+    }
+
+    private static bool IsEmailUniqueViolation(DbUpdateException exception)
+    {
+        return exception.InnerException is SqlException sqlException &&
+            sqlException.Errors
+                .Cast<SqlError>()
+                .Any(error =>
+                    error.Number is 2601 or 2627 &&
+                    error.Message.Contains(
+                        EmailUniqueIndexName,
+                        StringComparison.OrdinalIgnoreCase));
     }
 }

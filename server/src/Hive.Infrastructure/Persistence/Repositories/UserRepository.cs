@@ -1,5 +1,5 @@
 using Hive.Application.Abstractions.Persistence;
-using Hive.Application.Features.Authentication.Register;
+using Hive.Application.Common.Exceptions;
 using Hive.Domain.Entities;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;

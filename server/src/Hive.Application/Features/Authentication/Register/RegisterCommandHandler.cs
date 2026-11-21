@@ -1,6 +1,7 @@
 using System.Net.Mail;
 using Hive.Application.Abstractions.Persistence;
 using Hive.Application.Abstractions.Security;
+using Hive.Application.Common.Exceptions;
 using Hive.Domain.Entities;
 
 namespace Hive.Application.Features.Authentication.Register;

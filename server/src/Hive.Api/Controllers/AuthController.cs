@@ -1,3 +1,4 @@
+using Hive.Application.Common.Exceptions;
 using Hive.Application.Features.Authentication.Register;
 using Microsoft.AspNetCore.Mvc;
 

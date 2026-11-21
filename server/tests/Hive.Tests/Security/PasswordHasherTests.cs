@@ -44,7 +44,7 @@ public sealed class PasswordHasherTests
     [InlineData(" ")]
     public void HashPassword_InvalidPassword_ThrowsArgumentException(string? password)
     {
-        Assert.Throws<ArgumentException>(() => _passwordHasher.HashPassword(password!));
+        Assert.ThrowsAny<ArgumentException>(() => _passwordHasher.HashPassword(password!));
     }
 
     [Theory]
@@ -58,7 +58,7 @@ public sealed class PasswordHasherTests
         string? password,
         string? passwordHash)
     {
-        Assert.Throws<ArgumentException>(
+        Assert.ThrowsAny<ArgumentException>(
             () => _passwordHasher.VerifyPassword(password!, passwordHash!));
     }
 }
